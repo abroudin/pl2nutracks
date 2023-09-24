@@ -1,4 +1,6 @@
-from flask import Flask, render_template, session, redirect, jsonify, request
+from dotenv import load_dotenv
+load_dotenv()
+from flask import Flask, render_template, session, redirect, request
 from flask_migrate import Migrate
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_oauthlib.client import OAuth
@@ -9,12 +11,14 @@ from models import Artist, Genre, Track, Album, artist_genres
 from database import db
 from datetime import datetime
 import requests
+import os
 
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
 
 
 db.init_app(app)
@@ -25,8 +29,8 @@ oauth = OAuth(app)
 # Set up the Spotify OAuth client
 spotify = oauth.remote_app(
     'spotify',
-    consumer_key='6171452e785642ee8265843578fd9d43',  # Replace with your Client ID
-    consumer_secret='0a0c118f4bdb4548b68292eff1a9163e',  # Replace with your Client Secret
+    consumer_key = os.environ.get('CONSUMER_KEY'),
+    consumer_secret = os.environ.get('CONSUMER_SECRET'),
     request_token_params={
         'scope': 'user-library-read user-read-email streaming',
         'show_dialog': True
