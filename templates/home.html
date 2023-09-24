@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Discovery App</title>
+</head>
+<body>
+    <h1>Discover new music through curated Spotify playlists</h1>
+    {% for genre, tracks in genre_data.items() %}
+        <h2>{{ genre }}</h2>
+        <ul>
+            {% for track in tracks %}
+                <li>
+                    <h3>{{ track.name }}</h3>
+                    by {{ track.artist.name }}<br>
+                    from the album {{ track.album.name }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+        window.onSpotifyWebPlaybackSDKReady = function () {
+            const token = '{{ token }}';  // Access token from Flask's session
+            const player = new Spotify.Player({
+                name: 'Web Playback SDK Quick Start Player',
+                getOAuthToken: callback => {
+                    callback(token);
+                }
+            });
+    
+            // Error handling
+            player.addListener('initialization_error', ({ message }) => { console.error(message); });
+            player.addListener('authentication_error', ({ message }) => { console.error(message); });
+            player.addListener('account_error', ({ message }) => { console.error(message); });
+            player.addListener('playback_error', ({ message }) => { console.error(message); });
+    
+            // Playback status updates
+            player.addListener('player_state_changed', state => { console.log(state); });
+    
+            // Ready
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+    
+            // Not Ready
+            player.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+    
+            // Connect to the player!
+            player.connect();
+        };
+    </script>
+    <script type="text/javascript">
+        var spotifyToken = "{{ token }}";
+    </script>
+</body>
+</html>
