@@ -10,7 +10,7 @@
         <ul>
             {% for track in tracks %}
                 <li>
-                    <h3>{{ track.name }}</h3>
+                    <h3><a href="spotify:track:{{ track.id }}" target="_blank">{{ track.name }}</a></h3>
                     by {{ track.artist.name }}<br>
                     from the album {{ track.album.name }}<br>
                 </li>
